@@ -1,43 +1,21 @@
-import bluetooth
+import asyncio
+from bleak import BleakClient, BleakScanner
+from bleak.backends.characteristic import BleakGATTCharacteristic
+import cv2
 
-# Option 1: Discover nearby devices and find the ESP32
-print("Scanning for devices...")
+ESP_MAC = "24:DC:C3:99:0E:6E"
 
-nearby_devices = bluetooth.discover_devices(duration=8, lookup_names=True)
-esp32_addr = None
+SERVICE_UUID = "4fafc201-1fb5-459e-8fcc-c5c9c331914b"
+CHARACTERISTIC_UUID_RX = "beb5483e-36e1-4688-b7f5-ea07361b26a8"
+CHARACTERISTIC_UUID_TX = "beb5483f-36e1-4688-b7f5-ea07361b26a8"
 
-for addr, name in nearby_devices:
-    print(f"Found {name} - {addr}")
-    if name == "TURC2C":  # Change to your ESP32 Bluetooth name if different
-        esp32_addr = addr
-        break
+def handle_notification(characteristic: BleakGATTCharacteristic, data: bytearray):
+    print(f"Notification from {characteristic.description}: {data.decode()}")
 
-if esp32_addr is None:
-    print("ESP32 device not found. Make sure it is powered on and discoverable.")
-    exit(1)
+async def main():
+    async with BleakClient(ESP_MAC) as client:
+        print(f"Connected: {client.is_connected}")
 
-# Option 2: If you know the MAC address, you can set it directly
-esp32_addr = "24:DC:C3:99:0E:6C" # Replace with your ESP32's Bluetooth address
+        await client.start_notify(CHARACTERISTIC_UUID_TX, handle_notification)
 
-port = 1  # RFCOMM port; SPP usually uses port 1
-
-# Create an RFCOMM Bluetooth socket and connect to the ESP32
-sock = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
-try:
-    sock.connect((esp32_addr, port))
-    print(f"Connected to ESP32 at {esp32_addr}")
-
-    # Send a message to the ESP32
-    message = "Monkey 1 2 3"
-    sock.send(message)
-    print("Sent:", message)
-
-    # Wait for a response (adjust buffer size and timeout as needed)
-    data = sock.recv(1024)
-    print("Received:", data.decode('utf-8'))
-
-except bluetooth.btcommon.BluetoothError as err:
-    print("Bluetooth error:", err)
-finally:
-    sock.close()
-    print("Connection closed.")
+        message = f'ERROR '
