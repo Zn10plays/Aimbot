@@ -8,7 +8,7 @@ esp32_addr = None
 
 for addr, name in nearby_devices:
     print(f"Found {name} - {addr}")
-    if name == "ESP32test":  # Change to your ESP32 Bluetooth name if different
+    if name == "TURC2C":  # Change to your ESP32 Bluetooth name if different
         esp32_addr = addr
         break
 
@@ -17,7 +17,7 @@ if esp32_addr is None:
     exit(1)
 
 # Option 2: If you know the MAC address, you can set it directly
-# esp32_addr = "XX:XX:XX:XX:XX:XX"  # Replace with your ESP32's Bluetooth address
+esp32_addr = "24:DC:C3:99:0E:6C" # Replace with your ESP32's Bluetooth address
 
 port = 1  # RFCOMM port; SPP usually uses port 1
 
@@ -28,7 +28,7 @@ try:
     print(f"Connected to ESP32 at {esp32_addr}")
 
     # Send a message to the ESP32
-    message = "Hello from Python!"
+    message = "Monkey 1 2 3"
     sock.send(message)
     print("Sent:", message)
 
