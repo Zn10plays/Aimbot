@@ -1,0 +1,6 @@
+model: ./model/yolo11n.pt
+cam: 1
+ESP_MAC: "24:DC:C3:99:0E:6E" # these should be changed
+SERVICE_UUID: "4fafc201-1fb5-459e-8fcc-c5c9c331914b" # these should be changed
+CHARACTERISTIC_UUID_RX: "beb5483e-36e1-4688-b7f5-ea07361b26a8" # these should be changed
+CHARACTERISTIC_UUID_TX: "beb5483f-36e1-4688-b7f5-ea07361b26a8" # these should be changed
