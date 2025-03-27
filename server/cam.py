@@ -2,10 +2,10 @@ import cv2
 from ultralytics import YOLO
 
 # Load YOLO model (download a pretrained model if not available)
-model = YOLO("./model/yolo11n.pt")  # You can use 'yolov8s.pt', 'yolov8m.pt', etc.
+model = YOLO("./model/yolo11n.pt").to('cuda')  # You can use 'yolov8s.pt', 'yolov8m.pt', etc.
 
 # Open webcam
-cap = cv2.VideoCapture(1)  # Change to video file path if needed
+cap = cv2.VideoCapture(0)  # Change to video file path if needed
 
 while cap.isOpened():
     ret, frame = cap.read()

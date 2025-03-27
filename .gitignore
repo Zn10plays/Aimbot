@@ -6,3 +6,5 @@
 .vscode
 */venv
 venv
+server/venv
+server/model/

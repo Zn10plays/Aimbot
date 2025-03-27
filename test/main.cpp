@@ -7,17 +7,18 @@
 #define vStepPin 18
 #define vDirPin 19
 
+
+int last_message_timestamp = 0;
+BluetoothSerial SerialBT;
+AccelStepper hStepper(AccelStepper::DRIVER, hStepPin, hDirPin);
+AccelStepper vStepper(AccelStepper::DRIVER, vStepPin, vDirPin);
+
 struct Message {
   String message;
   int x_error;
   int y_error;
   int timestamp;
 };
-
-int last_message_timestamp = 0;
-BluetoothSerial SerialBT;
-AccelStepper hStepper(AccelStepper::DRIVER, hStepPin, hDirPin);
-AccelStepper vStepper(AccelStepper::DRIVER, vStepPin, vDirPin);
 
 Message checkForIncommingMessage(BluetoothSerial &Serial_BT) {
   Message m;
