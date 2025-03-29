@@ -8,3 +8,4 @@
 venv
 server/venv
 server/model/
+*.asv
