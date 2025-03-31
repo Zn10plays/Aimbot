@@ -193,14 +193,15 @@ void loop() {
         Serial.println("setting target_detected to true");
         target_detected = true;
 
-        vStepper.move(-previousCommand->yerror * .3);
-        hStepper.move(previousCommand->xerror * .3);
+        // vStepper.move(-previousCommand->yerror * .3);
+        // hStepper.move(previousCommand->xerror * .3);
+        hStepper.moveTo(previousCommand->x * 3200/360);
     } else {
-        vStepper.setAcceleration(-previousCommand->yerror * 30);
+        // vStepper.setAcceleration(-previousCommand->yerror * 30);
         hStepper.setAcceleration(previousCommand->xerror * 35);
     }
 
      // Small delay to avoid busy-waiting
     hStepper.run();
-    vStepper.run();
+    // vStepper.run();
 }

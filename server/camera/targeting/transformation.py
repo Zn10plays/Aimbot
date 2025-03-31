@@ -1,51 +1,47 @@
 import numpy as np
 
-def compute_turret_angles(u, v, camera_matrix, alpha, beta, theta_current, phi_current):
+def compute_angles(u, v, f, alpha, beta):
     """
-    Compute the turret angles (theta, phi) required to center a target (u, v) in the camera frame.
-    
-    Parameters:
-    - u, v: Target pixel coordinates in the camera image.
-    - camera_matrix: 3x3 intrinsic camera matrix.
-    - alpha: Vertical offset of the camera from the turret origin.
-    - beta: Forward offset of the camera from the turret origin.
-    - theta_current, phi_current: Current turret angles.
+    Compute the turret angles theta and phi to center the detected point.
+
+    Args:
+        u (float): X-coordinate of the detected point in the camera frame.
+        v (float): Y-coordinate of the detected point in the camera frame.
+        f (float): Focal length of the camera (in pixels).
+        alpha (float): Vertical offset of the camera from the turret origin (upwards).
+        beta (float): Horizontal offset of the camera from the turret origin (along the turret's forward direction).
 
     Returns:
-    - (theta_desired, phi_desired): The new turret angles.
+        tuple: (theta, phi) in radians, the required angles to center the point.
     """
-    # Camera intrinsics (inverse transformation)
-    uv1 = np.array([u, v, 1.0])  # Homogeneous coordinates
-    direction_cam = np.linalg.inv(camera_matrix) @ uv1
-    direction_cam /= np.linalg.norm(direction_cam)  # Normalize to unit vector
+    # Step 1: Convert (u, v) to a normalized direction vector in camera's coordinate system
+    direction_camera = np.array([u, v, 1380.4536060478])
+    direction_normalized = direction_camera / np.linalg.norm(direction_camera)
 
-    # Camera to turret transformation
-    x_c, y_c, z_c = direction_cam
+    # Step 2: Transform direction to turret's coordinate system considering camera offset
+    # Assuming the camera's position is (0, alpha, beta) in turret's frame when theta=0, phi=0
+    # To account for parallax, we approximate the direction adjustment
+    # This is a simplified model; for precise calculation, iterative methods are needed
+    dx, dy, dz = direction_normalized
+    adjusted_direction = np.array([
+        dx * beta,
+        dy * beta + alpha,
+        dz * beta
+    ])
+    adjusted_direction_normalized = adjusted_direction
 
-    # Adjust for camera position offset (translation)
-    x_t = x_c + beta
-    y_t = y_c + alpha
-    z_t = z_c  # Camera is assumed to be aligned with turret forward
+    D_x, D_y, D_z = adjusted_direction_normalized
 
-    # Compute new angles in turret space
-    theta_desired = np.arctan2(x_t, z_t)  # Yaw (horizontal)
-    phi_desired = np.arctan2(y_t, np.sqrt(x_t**2 + z_t**2))  # Pitch (vertical)
+    # Step 3: Compute theta and phi
+    theta = np.arccos(D_z)
+    phi = np.arctan2(D_x, -D_y)
 
-    # Compute required adjustments
-    delta_theta = np.degrees(theta_desired - theta_current)
-    delta_phi = np.degrees(phi_desired - phi_current)
+    return theta, phi
 
-    return theta_desired, phi_desired, delta_theta, delta_phi
-
-# Example values
-camera_matrix = np.array([[1394.77415450476,0,508.291453466793],  # fx, 0, cx
-                          [0,1380.4536060478,209.447535174643],  # 0, fy, cy
-                          [0, 0, 1]])     # 0, 0, 1
-
-
-u, v = 350, 260  # Target pixel coordinates
-alpha, beta = 0.1, 0.2  # Camera offset from turret origin
-theta_current, phi_current = np.radians(10), np.radians(-5)  # Current turret angles
-
-# Compute turret angles
-theta_new, phi_new, d_theta, d_phi = compute_turret_angles(u, v, camera_matrix, alpha, beta, theta_current, phi_current)
+# Example usage:
+# u, v = (100, 50)  # Detected point
+# f = 500           # Focal length (example value)
+# alpha = 0.1       # Camera vertical offset (meters)
+# beta = 0.2        # Camera horizontal offset (meters)
+# theta, phi = compute_angles(u, v, f, alpha, beta)
+# print(f"Theta: {theta} radians, Phi: {phi} radians")

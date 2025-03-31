@@ -1,6 +1,15 @@
-MODEL: ./model/yolo11n.pt
-CAM: 0
+MODEL: ./model/yolov8m-face.pt
+CAM: 1
 ESP_MAC: "24:DC:C3:99:0E:6E" # these should be changed
 SERVICE_UUID: "4fafc201-1fb5-459e-8fcc-c5c9c331914b" # these should be changed
 CHARACTERISTIC_UUID_RX: "beb5483e-36e1-4688-b7f5-ea07361b26a8" # these should be changed
 CHARACTERISTIC_UUID_TX: "beb5483f-36e1-4688-b7f5-ea07361b26a8" # these should be changed
+INTRINSIC_MATRIX: [
+  [765.12746101653,0,172.730124181528],
+  [0,770.581746678615,395.435250618689],
+  [0,0,1]
+]
+ALPHA: 0
+BETA: 0
+TARGET_CLASSES: ["face"] # ["face", "person", "car", "bicycle", "motorcycle", "bus", "truck"]
+TARGET_CONFIDENCE: 0.5

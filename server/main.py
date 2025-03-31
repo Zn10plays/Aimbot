@@ -9,7 +9,8 @@ import yaml
 from ultralytics import YOLO
 from time import time
 from bleak.backends.winrt.util import uninitialize_sta
-
+import camera.targeting.transformation as transformation
+import numpy as np
 
 
 cfg = yaml.safe_load(open("cfg.yaml"))
@@ -70,11 +71,19 @@ async def main():
 
                     x = (x1 + x2) // 2
                     y = (y1 + y2) // 2
+
+                    turret_angles = transformation.compute_angles(x, y, 0, cfg['ALPHA'], cfg['BETA'])
+
                     #  errors are calculated from the center of the screen
                     xerror = x - frame.shape[1] // 2
                     yerror = y - frame.shape[0] // 2
 
-                    await sent_message(client, x, y, xerror, yerror)
+                    # write the x error and y error on the screen
+                    cv2.putText(frame, f"X angle: {turret_angles[0]}", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 2)
+                    cv2.putText(frame, f"Y angle: {turret_angles[1]}", (10, 50), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 2)
+
+                    await sent_message(client, turret_angles[0], turret_angles[1], 0, 0)
+
 
                     # target is ploted on the screen
                     cv2.circle(frame, (x, y), 5, (0, 0, 255), -1)

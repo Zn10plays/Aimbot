@@ -9,3 +9,5 @@ venv
 server/venv
 server/model/
 *.asv
+server/camera/calibration_images
+.idea/
