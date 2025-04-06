@@ -4,12 +4,10 @@ ESP_MAC: "24:DC:C3:99:0E:6E" # these should be changed
 SERVICE_UUID: "4fafc201-1fb5-459e-8fcc-c5c9c331914b" # these should be changed
 CHARACTERISTIC_UUID_RX: "beb5483e-36e1-4688-b7f5-ea07361b26a8" # these should be changed
 CHARACTERISTIC_UUID_TX: "beb5483f-36e1-4688-b7f5-ea07361b26a8" # these should be changed
-INTRINSIC_MATRIX: [
-  [765.12746101653,0,172.730124181528],
-  [0,770.581746678615,395.435250618689],
-  [0,0,1]
-]
 ALPHA: 0
 BETA: 0
 TARGET_CLASSES: ["face"] # ["face", "person", "car", "bicycle", "motorcycle", "bus", "truck"]
 TARGET_CONFIDENCE: 0.5
+CAM_CONFIG: camera/matlab_alg/camera_calib.yaml
+camera_matrix: [[995.782425, 0.000000, 299.263214], [0.000000, 995.602715, 211.509255], [0.000000, 0.000000, 1.000000]]
+distortion_coefficients: [-0.7906086474,  1.1364453130,  0.0000000000,  0.0000000000,  0.0000000000,]

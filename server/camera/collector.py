@@ -22,6 +22,8 @@ while True:
         print("Failed to grab frame")
         break
 
+    frame = cv2.flip(frame, 0)
+
     # Display the frame
     cv2.imshow("Camera Feed", frame)
 
